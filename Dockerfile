@@ -1,13 +1,19 @@
-FROM alpine:3.8
+FROM alpine:3.12
 MAINTAINER Friday Godswill <friday@hotels.ng>
 
 #Some weird variables 
 ENV php_conf /etc/php7/php.ini
 ENV fpm_conf /etc/php7/php-fpm.d/www.conf
 
-
+RUN ALPINE_VERSION=`cat /etc/alpine-release | cut -d'.' -f-2` && \
+    wget -O /etc/apk/keys/php-alpine.rsa.pub https://packages.whatwedo.ch/php-alpine.rsa.pub && \
+    echo "@php https://packages.whatwedo.ch/php-alpine/v$ALPINE_VERSION/php-7.4" >> /etc/apk/repositori>
+    apk update && \
+    apk --no-cache add \
+    php7@php
+    
 # trust this project public key to trust the packages.
-ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
+#ADD https://php.codecasts.rocks/php-alpine.rsa.pub /etc/apk/keys/php-alpine.rsa.pub
 
 # make sure you can use HTTPS
 RUN apk --update add ca-certificates
@@ -23,7 +29,7 @@ RUN apk --update add supervisor bash nano git nginx &&\
 
 
 # add the repository, make sure you replace the correct versions if you want.
-RUN echo "@php https://dl.bintray.com/php-alpine/v3.8/php-7.3" >> /etc/apk/repositories
+#RUN echo "@php https://dl.bintray.com/php-alpine/v3.8/php-7.3" >> /etc/apk/repositories
 
 # install php and some extensions
 # notice the @php is required to avoid getting default php packages from alpine instead.
